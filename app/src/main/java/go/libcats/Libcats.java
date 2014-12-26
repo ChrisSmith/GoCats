@@ -9,6 +9,19 @@ import go.Seq;
 public abstract class Libcats {
     private Libcats() {} // uninstantiable
     
+    public static byte[] DownloadCat() throws Exception {
+        go.Seq _in = new go.Seq();
+        go.Seq _out = new go.Seq();
+        byte[] _result;
+        Seq.send(DESCRIPTOR, CALL_DownloadCat, _in, _out);
+        _result = _out.readByteArray();
+        String _err = _out.readUTF16();
+        if (_err != null) {
+            throw new Exception(_err);
+        }
+        return _result;
+    }
+    
     public static String GetCats(String name) {
         go.Seq _in = new go.Seq();
         go.Seq _out = new go.Seq();
@@ -19,6 +32,15 @@ public abstract class Libcats {
         return _result;
     }
     
-    private static final int CALL_GetCats = 1;
+    public static void Init(String cachePath) {
+        go.Seq _in = new go.Seq();
+        go.Seq _out = new go.Seq();
+        _in.writeUTF16(cachePath);
+        Seq.send(DESCRIPTOR, CALL_Init, _in, _out);
+    }
+    
+    private static final int CALL_DownloadCat = 1;
+    private static final int CALL_GetCats = 2;
+    private static final int CALL_Init = 3;
     private static final String DESCRIPTOR = "libcats";
 }

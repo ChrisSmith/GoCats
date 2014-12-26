@@ -1,9 +1,12 @@
 package org.collegelabs.gocats.app;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 import go.Go;
 import go.libcats.Libcats;
@@ -15,10 +18,19 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Go.init(getApplicationContext());
-
         TextView tv = (TextView) findViewById(R.id.text);
         tv.setText(Libcats.GetCats("Doctor Who"));
+
+        try {
+            byte[] bytes = Libcats.DownloadCat();
+            Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+
+            ImageView imageView = (ImageView) findViewById(R.id.imageview);
+            imageView.setImageBitmap(bmp);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
