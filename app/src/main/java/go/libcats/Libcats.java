@@ -9,10 +9,11 @@ import go.Seq;
 public abstract class Libcats {
     private Libcats() {} // uninstantiable
     
-    public static byte[] DownloadCat() throws Exception {
+    public static byte[] DownloadCat(String url) throws Exception {
         go.Seq _in = new go.Seq();
         go.Seq _out = new go.Seq();
         byte[] _result;
+        _in.writeUTF16(url);
         Seq.send(DESCRIPTOR, CALL_DownloadCat, _in, _out);
         _result = _out.readByteArray();
         String _err = _out.readUTF16();
@@ -22,13 +23,16 @@ public abstract class Libcats {
         return _result;
     }
     
-    public static String GetCats(String name) {
+    public static RedditUrlCollection GetCats() throws Exception {
         go.Seq _in = new go.Seq();
         go.Seq _out = new go.Seq();
-        String _result;
-        _in.writeUTF16(name);
+        RedditUrlCollection _result;
         Seq.send(DESCRIPTOR, CALL_GetCats, _in, _out);
-        _result = _out.readUTF16();
+        _result = new RedditUrlCollection(_out.readRef());
+        String _err = _out.readUTF16();
+        if (_err != null) {
+            throw new Exception(_err);
+        }
         return _result;
     }
     
@@ -37,6 +41,56 @@ public abstract class Libcats {
         go.Seq _out = new go.Seq();
         _in.writeUTF16(cachePath);
         Seq.send(DESCRIPTOR, CALL_Init, _in, _out);
+    }
+    
+    public static final class RedditUrlCollection implements go.Seq.Object {
+        private static final String DESCRIPTOR = "go.libcats.RedditUrlCollection";
+        private static final int CALL_GetUrl = 0x00c;
+        
+        private go.Seq.Ref ref;
+        
+        private RedditUrlCollection(go.Seq.Ref ref) { this.ref = ref; }
+        
+        public go.Seq.Ref ref() { return ref; }
+        
+        public void call(int code, go.Seq in, go.Seq out) {
+            throw new RuntimeException("internal error: cycle: cannot call concrete proxy");
+        }
+        
+        
+        public String GetUrl(long index) throws Exception {
+            go.Seq _in = new go.Seq();
+            go.Seq _out = new go.Seq();
+            String _result;
+            _in.writeRef(ref);
+            _in.writeInt(index);
+            Seq.send(DESCRIPTOR, CALL_GetUrl, _in, _out);
+            _result = _out.readUTF16();
+            String _err = _out.readUTF16();
+            if (_err != null) {
+                throw new Exception(_err);
+            }
+            return _result;
+        }
+        
+        @Override public boolean equals(Object o) {
+            if (o == null || !(o instanceof RedditUrlCollection)) {
+                return false;
+            }
+            RedditUrlCollection that = (RedditUrlCollection)o;
+            return true;
+        }
+        
+        @Override public int hashCode() {
+            return java.util.Arrays.hashCode(new Object[] {});
+        }
+        
+        @Override public String toString() {
+            StringBuilder b = new StringBuilder();
+            b.append("RedditUrlCollection").append("{");
+            return b.append("}").toString();
+        }
+        
     }
     
     private static final int CALL_DownloadCat = 1;

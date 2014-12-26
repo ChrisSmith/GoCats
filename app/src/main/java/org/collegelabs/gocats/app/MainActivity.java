@@ -18,11 +18,11 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        TextView tv = (TextView) findViewById(R.id.text);
-        tv.setText(Libcats.GetCats("Doctor Who"));
-
         try {
-            byte[] bytes = Libcats.DownloadCat();
+            Libcats.RedditUrlCollection dto = Libcats.GetCats();
+            String url = dto.GetUrl(0);
+
+            byte[] bytes = Libcats.DownloadCat(url);
             Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
 
             ImageView imageView = (ImageView) findViewById(R.id.imageview);
