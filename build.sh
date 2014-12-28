@@ -7,7 +7,7 @@ if [ ! -f build.sh ]; then
 	exit 1
 fi
 
-./gobind.sh
+./genbindings.sh
 
 echo 'performing gradle build'
 ./gradlew build
