@@ -2,9 +2,10 @@ GoCats
 ======
 
 Example Android App using Go as the primary language.
-Grabs images from /r/aww and displays a new one every couple seconds on your phone. 
-Go is used for the networking, json parsing, caching and timer
 
+Grabs images from /r/aww and displays a new one every couple seconds on your phone. 
+
+Go is used for the networking, json parsing, caching and timer. Go source: https://github.com/ChrisSmith/libcats
 
 ## Quick Setup for Go/Android compilation  
 Update Android Tools
