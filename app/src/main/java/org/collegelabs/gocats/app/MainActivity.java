@@ -18,6 +18,7 @@ import java.lang.ref.WeakReference;
 public class MainActivity extends Activity {
 
     private Libcats.CallbackToken callbackToken;
+    private Bitmap currentImage = null;
 
     private static class ImgCallback extends Libcats.ImageCallback.Stub {
 
@@ -29,8 +30,6 @@ public class MainActivity extends Activity {
 
         @Override
         public void ImageReceived(byte[] image) {
-            Log.d(MainActivity.class.getSimpleName(), "ImageReceived!");
-
             final MainActivity mainActivity = this.activity.get();
             if(mainActivity == null){
                 return;
@@ -41,9 +40,17 @@ public class MainActivity extends Activity {
                 @Override
                 public void run() {
                     Bitmap bmp = BitmapFactory.decodeByteArray(fimage, 0, fimage.length);
+                    if(bmp == null)  {
+                        return;
+                    }
 
                     ImageView imageView = (ImageView) mainActivity.findViewById(R.id.imageview);
                     imageView.setImageBitmap(bmp);
+
+                    if(mainActivity.currentImage != null){
+                        mainActivity.currentImage.recycle();
+                    }
+                    mainActivity.currentImage = bmp;
                 }
             });
         }
