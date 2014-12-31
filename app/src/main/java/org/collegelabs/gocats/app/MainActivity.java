@@ -1,22 +1,27 @@
 package org.collegelabs.gocats.app;
 
+import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
-import go.Go;
-import go.Seq;
+import android.widget.ProgressBar;
 import go.libcats.Libcats;
 
 import java.lang.ref.WeakReference;
 
 public class MainActivity extends Activity {
 
+    private ProgressBar progressBar;
     private Libcats.CallbackToken callbackToken;
     private Bitmap currentImage = null;
 
@@ -44,11 +49,34 @@ public class MainActivity extends Activity {
                         return;
                     }
 
-                    ImageView imageView = (ImageView) mainActivity.findViewById(R.id.imageview);
-                    imageView.setImageBitmap(bmp);
+                    if(mainActivity.progressBar.getVisibility() == View.VISIBLE){
+                        mainActivity.progressBar.setVisibility(View.GONE);
+                    }
 
-                    if(mainActivity.currentImage != null){
-                        mainActivity.currentImage.recycle();
+                    ImageView imageView = (ImageView) mainActivity.findViewById(R.id.imageview);
+
+                    Resources resources = mainActivity.getResources();
+                    Drawable currentDrawable = imageView.getDrawable();
+                    currentDrawable = currentDrawable != null
+                            ? currentDrawable
+                            : new ColorDrawable(resources.getColor(android.R.color.darker_gray));
+
+                    Drawable[] layers = {currentDrawable, new BitmapDrawable(resources, bmp)};
+                    TransitionDrawable transition = new TransitionDrawable(layers);
+                    transition.setCrossFadeEnabled(true);
+                    transition.startTransition(300);
+
+                    imageView.setImageDrawable(transition);
+                    imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+
+                    final Bitmap oldBitmap = mainActivity.currentImage;
+                    if(oldBitmap != null){
+                        mainActivity.progressBar.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                oldBitmap.recycle();
+                            }
+                        }, 400);
                     }
                     mainActivity.currentImage = bmp;
                 }
@@ -60,6 +88,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        progressBar = (ProgressBar) findViewById(R.id.progressSpinner);
     }
 
     private void closeCallback(){

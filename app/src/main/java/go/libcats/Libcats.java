@@ -133,22 +133,8 @@ public abstract class Libcats {
         Seq.send(DESCRIPTOR, CALL_Init, _in, _out);
     }
     
-    public static void OnStart() {
-        go.Seq _in = new go.Seq();
-        go.Seq _out = new go.Seq();
-        Seq.send(DESCRIPTOR, CALL_OnStart, _in, _out);
-    }
-    
-    public static void OnStop() {
-        go.Seq _in = new go.Seq();
-        go.Seq _out = new go.Seq();
-        Seq.send(DESCRIPTOR, CALL_OnStop, _in, _out);
-    }
-    
     private static final int CALL_CreateImageCallback = 1;
     private static final int CALL_DownloadBytes = 2;
     private static final int CALL_Init = 3;
-    private static final int CALL_OnStart = 4;
-    private static final int CALL_OnStop = 5;
     private static final String DESCRIPTOR = "libcats";
 }
