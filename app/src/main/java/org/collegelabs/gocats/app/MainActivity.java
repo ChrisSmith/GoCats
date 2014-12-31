@@ -40,15 +40,14 @@ public class MainActivity extends Activity {
                 return;
             }
 
-            final byte[] fimage = image;
+            final Bitmap bmp = BitmapFactory.decodeByteArray(image, 0, image.length);
+            if(bmp == null)  {
+                return;
+            }
+
             mainActivity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Bitmap bmp = BitmapFactory.decodeByteArray(fimage, 0, fimage.length);
-                    if(bmp == null)  {
-                        return;
-                    }
-
                     if(mainActivity.progressBar.getVisibility() == View.VISIBLE){
                         mainActivity.progressBar.setVisibility(View.GONE);
                     }
