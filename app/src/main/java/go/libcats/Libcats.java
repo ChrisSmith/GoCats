@@ -76,7 +76,7 @@ public abstract class Libcats {
     }
     
     public interface ImageCallback extends go.Seq.Object {
-        public void ImageReceived(byte[] image);
+        public void ImageReceived(byte[] image, String url, String title, String author, String permalink);
         
         public static abstract class Stub implements ImageCallback {
             static final String DESCRIPTOR = "go.libcats.ImageCallback";
@@ -92,7 +92,11 @@ public abstract class Libcats {
                 switch (code) {
                 case Proxy.CALL_ImageReceived: {
                     byte[] param_image = in.readByteArray();
-                    this.ImageReceived(param_image);
+                    String param_url = in.readUTF16();
+                    String param_title = in.readUTF16();
+                    String param_author = in.readUTF16();
+                    String param_permalink = in.readUTF16();
+                    this.ImageReceived(param_image, param_url, param_title, param_author, param_permalink);
                     return;
                 }
                 default:
@@ -114,16 +118,331 @@ public abstract class Libcats {
                 throw new RuntimeException("cycle: cannot call proxy");
             }
         
-            public void ImageReceived(byte[] image) {
+            public void ImageReceived(byte[] image, String url, String title, String author, String permalink) {
                 go.Seq _in = new go.Seq();
                 go.Seq _out = new go.Seq();
                 _in.writeRef(ref);
                 _in.writeByteArray(image);
+                _in.writeUTF16(url);
+                _in.writeUTF16(title);
+                _in.writeUTF16(author);
+                _in.writeUTF16(permalink);
                 Seq.send(DESCRIPTOR, CALL_ImageReceived, _in, _out);
             }
             
             static final int CALL_ImageReceived = 0x10a;
         }
+    }
+    
+    public static final class ImageInfo implements go.Seq.Object {
+        private static final String DESCRIPTOR = "go.libcats.ImageInfo";
+        private static final int FIELD_Url_GET = 0x00f;
+        private static final int FIELD_Url_SET = 0x01f;
+        private static final int FIELD_Title_GET = 0x10f;
+        private static final int FIELD_Title_SET = 0x11f;
+        private static final int FIELD_Author_GET = 0x20f;
+        private static final int FIELD_Author_SET = 0x21f;
+        private static final int FIELD_Permalink_GET = 0x30f;
+        private static final int FIELD_Permalink_SET = 0x31f;
+        private static final int FIELD_Image_GET = 0x40f;
+        private static final int FIELD_Image_SET = 0x41f;
+        
+        private go.Seq.Ref ref;
+        
+        private ImageInfo(go.Seq.Ref ref) { this.ref = ref; }
+        
+        public go.Seq.Ref ref() { return ref; }
+        
+        public void call(int code, go.Seq in, go.Seq out) {
+            throw new RuntimeException("internal error: cycle: cannot call concrete proxy");
+        }
+        
+        public String getUrl() {
+            Seq in = new Seq();
+            Seq out = new Seq();
+            in.writeRef(ref);
+            Seq.send(DESCRIPTOR, FIELD_Url_GET, in, out);
+            return out.readUTF16();
+        }
+        
+        public void setUrl(String v) {
+            Seq in = new Seq();
+            Seq out = new Seq();
+            in.writeRef(ref);
+            in.writeUTF16(v);
+            Seq.send(DESCRIPTOR, FIELD_Url_SET, in, out);
+        }
+        public String getTitle() {
+            Seq in = new Seq();
+            Seq out = new Seq();
+            in.writeRef(ref);
+            Seq.send(DESCRIPTOR, FIELD_Title_GET, in, out);
+            return out.readUTF16();
+        }
+        
+        public void setTitle(String v) {
+            Seq in = new Seq();
+            Seq out = new Seq();
+            in.writeRef(ref);
+            in.writeUTF16(v);
+            Seq.send(DESCRIPTOR, FIELD_Title_SET, in, out);
+        }
+        public String getAuthor() {
+            Seq in = new Seq();
+            Seq out = new Seq();
+            in.writeRef(ref);
+            Seq.send(DESCRIPTOR, FIELD_Author_GET, in, out);
+            return out.readUTF16();
+        }
+        
+        public void setAuthor(String v) {
+            Seq in = new Seq();
+            Seq out = new Seq();
+            in.writeRef(ref);
+            in.writeUTF16(v);
+            Seq.send(DESCRIPTOR, FIELD_Author_SET, in, out);
+        }
+        public String getPermalink() {
+            Seq in = new Seq();
+            Seq out = new Seq();
+            in.writeRef(ref);
+            Seq.send(DESCRIPTOR, FIELD_Permalink_GET, in, out);
+            return out.readUTF16();
+        }
+        
+        public void setPermalink(String v) {
+            Seq in = new Seq();
+            Seq out = new Seq();
+            in.writeRef(ref);
+            in.writeUTF16(v);
+            Seq.send(DESCRIPTOR, FIELD_Permalink_SET, in, out);
+        }
+        public byte[] getImage() {
+            Seq in = new Seq();
+            Seq out = new Seq();
+            in.writeRef(ref);
+            Seq.send(DESCRIPTOR, FIELD_Image_GET, in, out);
+            return out.readByteArray();
+        }
+        
+        public void setImage(byte[] v) {
+            Seq in = new Seq();
+            Seq out = new Seq();
+            in.writeRef(ref);
+            in.writeByteArray(v);
+            Seq.send(DESCRIPTOR, FIELD_Image_SET, in, out);
+        }
+        
+        @Override public boolean equals(Object o) {
+            if (o == null || !(o instanceof ImageInfo)) {
+                return false;
+            }
+            ImageInfo that = (ImageInfo)o;
+            String thisUrl = getUrl();
+            String thatUrl = that.getUrl();
+            if (thisUrl == null) {
+                if (thatUrl != null) {
+                    return false;
+                }
+            } else if (!thisUrl.equals(thatUrl)) {
+                return false;
+            }
+            String thisTitle = getTitle();
+            String thatTitle = that.getTitle();
+            if (thisTitle == null) {
+                if (thatTitle != null) {
+                    return false;
+                }
+            } else if (!thisTitle.equals(thatTitle)) {
+                return false;
+            }
+            String thisAuthor = getAuthor();
+            String thatAuthor = that.getAuthor();
+            if (thisAuthor == null) {
+                if (thatAuthor != null) {
+                    return false;
+                }
+            } else if (!thisAuthor.equals(thatAuthor)) {
+                return false;
+            }
+            String thisPermalink = getPermalink();
+            String thatPermalink = that.getPermalink();
+            if (thisPermalink == null) {
+                if (thatPermalink != null) {
+                    return false;
+                }
+            } else if (!thisPermalink.equals(thatPermalink)) {
+                return false;
+            }
+            byte[] thisImage = getImage();
+            byte[] thatImage = that.getImage();
+            if (thisImage == null) {
+                if (thatImage != null) {
+                    return false;
+                }
+            } else if (!thisImage.equals(thatImage)) {
+                return false;
+            }
+            return true;
+        }
+        
+        @Override public int hashCode() {
+            return java.util.Arrays.hashCode(new Object[] {getUrl(), getTitle(), getAuthor(), getPermalink(), getImage()});
+        }
+        
+        @Override public String toString() {
+            StringBuilder b = new StringBuilder();
+            b.append("ImageInfo").append("{");
+            b.append("Url:").append(getUrl()).append(",");
+            b.append("Title:").append(getTitle()).append(",");
+            b.append("Author:").append(getAuthor()).append(",");
+            b.append("Permalink:").append(getPermalink()).append(",");
+            b.append("Image:").append(getImage()).append(",");
+            return b.append("}").toString();
+        }
+        
+    }
+    
+    public static final class ImageMetaData implements go.Seq.Object {
+        private static final String DESCRIPTOR = "go.libcats.ImageMetaData";
+        private static final int FIELD_Url_GET = 0x00f;
+        private static final int FIELD_Url_SET = 0x01f;
+        private static final int FIELD_Title_GET = 0x10f;
+        private static final int FIELD_Title_SET = 0x11f;
+        private static final int FIELD_Author_GET = 0x20f;
+        private static final int FIELD_Author_SET = 0x21f;
+        private static final int FIELD_Permalink_GET = 0x30f;
+        private static final int FIELD_Permalink_SET = 0x31f;
+        
+        private go.Seq.Ref ref;
+        
+        private ImageMetaData(go.Seq.Ref ref) { this.ref = ref; }
+        
+        public go.Seq.Ref ref() { return ref; }
+        
+        public void call(int code, go.Seq in, go.Seq out) {
+            throw new RuntimeException("internal error: cycle: cannot call concrete proxy");
+        }
+        
+        public String getUrl() {
+            Seq in = new Seq();
+            Seq out = new Seq();
+            in.writeRef(ref);
+            Seq.send(DESCRIPTOR, FIELD_Url_GET, in, out);
+            return out.readUTF16();
+        }
+        
+        public void setUrl(String v) {
+            Seq in = new Seq();
+            Seq out = new Seq();
+            in.writeRef(ref);
+            in.writeUTF16(v);
+            Seq.send(DESCRIPTOR, FIELD_Url_SET, in, out);
+        }
+        public String getTitle() {
+            Seq in = new Seq();
+            Seq out = new Seq();
+            in.writeRef(ref);
+            Seq.send(DESCRIPTOR, FIELD_Title_GET, in, out);
+            return out.readUTF16();
+        }
+        
+        public void setTitle(String v) {
+            Seq in = new Seq();
+            Seq out = new Seq();
+            in.writeRef(ref);
+            in.writeUTF16(v);
+            Seq.send(DESCRIPTOR, FIELD_Title_SET, in, out);
+        }
+        public String getAuthor() {
+            Seq in = new Seq();
+            Seq out = new Seq();
+            in.writeRef(ref);
+            Seq.send(DESCRIPTOR, FIELD_Author_GET, in, out);
+            return out.readUTF16();
+        }
+        
+        public void setAuthor(String v) {
+            Seq in = new Seq();
+            Seq out = new Seq();
+            in.writeRef(ref);
+            in.writeUTF16(v);
+            Seq.send(DESCRIPTOR, FIELD_Author_SET, in, out);
+        }
+        public String getPermalink() {
+            Seq in = new Seq();
+            Seq out = new Seq();
+            in.writeRef(ref);
+            Seq.send(DESCRIPTOR, FIELD_Permalink_GET, in, out);
+            return out.readUTF16();
+        }
+        
+        public void setPermalink(String v) {
+            Seq in = new Seq();
+            Seq out = new Seq();
+            in.writeRef(ref);
+            in.writeUTF16(v);
+            Seq.send(DESCRIPTOR, FIELD_Permalink_SET, in, out);
+        }
+        
+        @Override public boolean equals(Object o) {
+            if (o == null || !(o instanceof ImageMetaData)) {
+                return false;
+            }
+            ImageMetaData that = (ImageMetaData)o;
+            String thisUrl = getUrl();
+            String thatUrl = that.getUrl();
+            if (thisUrl == null) {
+                if (thatUrl != null) {
+                    return false;
+                }
+            } else if (!thisUrl.equals(thatUrl)) {
+                return false;
+            }
+            String thisTitle = getTitle();
+            String thatTitle = that.getTitle();
+            if (thisTitle == null) {
+                if (thatTitle != null) {
+                    return false;
+                }
+            } else if (!thisTitle.equals(thatTitle)) {
+                return false;
+            }
+            String thisAuthor = getAuthor();
+            String thatAuthor = that.getAuthor();
+            if (thisAuthor == null) {
+                if (thatAuthor != null) {
+                    return false;
+                }
+            } else if (!thisAuthor.equals(thatAuthor)) {
+                return false;
+            }
+            String thisPermalink = getPermalink();
+            String thatPermalink = that.getPermalink();
+            if (thisPermalink == null) {
+                if (thatPermalink != null) {
+                    return false;
+                }
+            } else if (!thisPermalink.equals(thatPermalink)) {
+                return false;
+            }
+            return true;
+        }
+        
+        @Override public int hashCode() {
+            return java.util.Arrays.hashCode(new Object[] {getUrl(), getTitle(), getAuthor(), getPermalink()});
+        }
+        
+        @Override public String toString() {
+            StringBuilder b = new StringBuilder();
+            b.append("ImageMetaData").append("{");
+            b.append("Url:").append(getUrl()).append(",");
+            b.append("Title:").append(getTitle()).append(",");
+            b.append("Author:").append(getAuthor()).append(",");
+            b.append("Permalink:").append(getPermalink()).append(",");
+            return b.append("}").toString();
+        }
+        
     }
     
     public static void Init(String cachePath) {
