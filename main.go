@@ -11,7 +11,5 @@ import (
 func main() {
 	libcats.SetThreadLogger()
 	fmt.Printf("main tid %d\n", libcats.GetThreadId())
-	app.Run(app.Callbacks{
-
-		})
+	app.Run(app.Callbacks{})
 }
