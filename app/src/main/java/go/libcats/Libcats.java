@@ -84,20 +84,6 @@ public abstract class Libcats {
         return _result;
     }
     
-    public static byte[] DownloadBytes(String url) throws Exception {
-        go.Seq _in = new go.Seq();
-        go.Seq _out = new go.Seq();
-        byte[] _result;
-        _in.writeUTF16(url);
-        Seq.send(DESCRIPTOR, CALL_DownloadBytes, _in, _out);
-        _result = _out.readByteArray();
-        String _err = _out.readUTF16();
-        if (_err != null) {
-            throw new Exception(_err);
-        }
-        return _result;
-    }
-    
     public interface ImageCallback extends go.Seq.Object {
         public void ImageFailed(String id);
         
@@ -534,7 +520,6 @@ public abstract class Libcats {
     
     private static final int CALL_CreateImageCallback = 1;
     private static final int CALL_CreateMetaDataCallback = 2;
-    private static final int CALL_DownloadBytes = 3;
-    private static final int CALL_Init = 4;
+    private static final int CALL_Init = 3;
     private static final String DESCRIPTOR = "libcats";
 }
