@@ -38,7 +38,8 @@ public class MainActivity extends Activity  {
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
 
-        catPagerAdapter = new CatPagerAdapter();
+        String lastId = savedInstanceState != null ? savedInstanceState.getString("lastId", null) : null;
+        catPagerAdapter = new CatPagerAdapter(lastId);
         viewPager.setAdapter(catPagerAdapter);
     }
 
@@ -54,6 +55,19 @@ public class MainActivity extends Activity  {
         super.onStop();
         Log.d(this.getClass().getSimpleName(), "onStop");
         catPagerAdapter.StopLoading();
+
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        // Save UI state changes to the savedInstanceState.
+        // This bundle will be passed to onCreate if the process is
+        // killed and restarted.
+
+        int item = viewPager.getCurrentItem() - 1;
+        String lastId = catPagerAdapter.GetId(item);
+        savedInstanceState.putString("lastId", lastId);
     }
 
     @Override

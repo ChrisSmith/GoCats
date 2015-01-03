@@ -20,6 +20,8 @@ import java.lang.ref.WeakReference;
 
 public class CatView extends RelativeLayout implements View.OnClickListener {
 
+    private static final String TAG = CatView.class.getSimpleName();
+
     @InjectView(R.id.textview) public TextView textView;
     @InjectView(R.id.progressSpinner) public ProgressBar progressSpinner;
     @InjectView(R.id.imageview) ImageView imageView;
@@ -44,6 +46,8 @@ public class CatView extends RelativeLayout implements View.OnClickListener {
     }
 
     private void init(Context context, AttributeSet attrs, int defStyle) {
+        Log.d(TAG, "new view!");
+
         LayoutInflater layoutInflater  = LayoutInflater.from(context);
         View view = layoutInflater.inflate(R.layout.pager_view, this);
         ButterKnife.inject(this, view);
@@ -127,16 +131,75 @@ public class CatView extends RelativeLayout implements View.OnClickListener {
         }
     }
 
-    private void setCallback(){
-        Log.d(CatView.class.getSimpleName(), "creating callback for: "+metaData.url);
+    private void setCallback(final Libcats.ImageCallbackToken newCallback, String id){
+        if(!id.equals(metaData.id)){
+            // whelp, just cancel it
+            BaseApplication.submit(new Runnable() {
+                @Override
+                public void run() {
+                    newCallback.Close();
+                }
+            });
+        } else {
+            callback = newCallback;
+        }
+    }
 
-        if(callback != null){
-            callback.Close();
-            callback = null;
+
+    private void setCallback(){
+        Log.d(TAG, "creating callback for: "+metaData.url);
+        long start = System.currentTimeMillis();
+
+        Libcats.ImageCallbackToken oldCallback = callback;
+        callback = null;
+
+        BaseApplication.submit(new CallbackRunner(this, oldCallback, getWidth(), getHeight(), metaData));
+
+        Log.d(TAG, "submitted to thread: "+(System.currentTimeMillis() - start)+" ms");
+    }
+
+    private static class CallbackRunner implements Runnable {
+
+        private WeakReference<CatView> viewRef;
+        private final Libcats.ImageCallbackToken callback;
+        private final int width;
+        private final int height;
+        private final ImageMetaData metaData;
+
+        public CallbackRunner(CatView view, Libcats.ImageCallbackToken callback, int width, int height, ImageMetaData metaData){
+            this.callback = callback;
+            this.width = width;
+            this.height = height;
+            this.metaData = metaData;
+            this.viewRef = new WeakReference<CatView>(view);
         }
 
-        callback = Libcats.CreateImageCallback(new ImgCallback(this), getWidth(), getHeight(), metaData.id, metaData.url);
+        @Override
+        public void run() {
+            if(this.callback != null){
+                long start = System.currentTimeMillis();
+                this.callback.Close();
+                Log.d(TAG, "callback.Close(): "+(System.currentTimeMillis() - start)+" ms");
+            }
+
+            final CatView view = viewRef.get();
+            if(view == null){
+                 return;
+            }
+
+            long start = System.currentTimeMillis();
+            final Libcats.ImageCallbackToken newCallback = Libcats.CreateImageCallback(new ImgCallback(view), width, height, metaData.id, metaData.url);
+            Log.d(TAG, "CreateImageCallback: "+(System.currentTimeMillis() - start)+" ms");
+
+            view.post(new Runnable() {
+                @Override
+                public void run() {
+                    view.setCallback(newCallback, metaData.id);
+                }
+            });
+        }
     }
+
 
     private static class ImgCallback extends Libcats.ImageCallback.Stub {
 

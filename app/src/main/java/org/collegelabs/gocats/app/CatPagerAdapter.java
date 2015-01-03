@@ -22,10 +22,13 @@ public class CatPagerAdapter extends RecyclingPagerAdapter {
 
     private Handler handler;
 
-    public CatPagerAdapter(){
+    private String _lastId; //set to null after used
+
+    public CatPagerAdapter(String lastId){
         metaDataList = new ArrayList<ImageMetaData>();
         handler = new Handler();
         ids = new HashSet<String>();
+        _lastId = lastId;
     }
 
     public void StopLoading(){
@@ -35,9 +38,28 @@ public class CatPagerAdapter extends RecyclingPagerAdapter {
         }
     }
 
+    public String GetId(int position){
+        if(position < 0 || position >= metaDataList.size()){
+            return "";
+        }
+        return metaDataList.get(position).id;
+    }
+
+    public String GetLastId(){
+        return GetId(metaDataList.size() - 1);
+    }
+
     public void StartLoading(){
         StopLoading();
-        callbackToken = Libcats.CreateMetaDataCallback(new MetaDataCallback(this), "");
+
+        String lastId;
+        if(_lastId != null) {
+            lastId = _lastId;
+            _lastId = null;
+        }else{
+            lastId = GetLastId();
+        }
+        callbackToken = Libcats.CreateMetaDataCallback(new MetaDataCallback(this), lastId);
     }
 
     public void Add(ImageMetaData metaData){

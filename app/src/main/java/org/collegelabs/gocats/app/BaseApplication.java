@@ -7,12 +7,23 @@ import android.util.Log;
 import go.Go;
 import go.libcats.Libcats;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+
 /**
  */
 public class BaseApplication extends Application {
     
-    private static String TAG = Application.class.getSimpleName(); 
-    
+    private static String TAG = Application.class.getSimpleName();
+
+    // Background thread to run tasks that don't need to be on the ui thread
+    private static final ExecutorService mFogettablePool = Executors.newFixedThreadPool(1);
+
+    public static void submit(Runnable action){
+        mFogettablePool.submit(action);
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
