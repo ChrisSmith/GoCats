@@ -89,6 +89,8 @@ public abstract class Libcats {
         
         public void ImageReceived(byte[] image, String id);
         
+        public void RawImageReceived(byte[] image, String id);
+        
         public static abstract class Stub implements ImageCallback {
             static final String DESCRIPTOR = "go.libcats.ImageCallback";
             
@@ -110,6 +112,12 @@ public abstract class Libcats {
                     byte[] param_image = in.readByteArray();
                     String param_id = in.readUTF16();
                     this.ImageReceived(param_image, param_id);
+                    return;
+                }
+                case Proxy.CALL_RawImageReceived: {
+                    byte[] param_image = in.readByteArray();
+                    String param_id = in.readUTF16();
+                    this.RawImageReceived(param_image, param_id);
                     return;
                 }
                 default:
@@ -148,8 +156,18 @@ public abstract class Libcats {
                 Seq.send(DESCRIPTOR, CALL_ImageReceived, _in, _out);
             }
             
+            public void RawImageReceived(byte[] image, String id) {
+                go.Seq _in = new go.Seq();
+                go.Seq _out = new go.Seq();
+                _in.writeRef(ref);
+                _in.writeByteArray(image);
+                _in.writeUTF16(id);
+                Seq.send(DESCRIPTOR, CALL_RawImageReceived, _in, _out);
+            }
+            
             static final int CALL_ImageFailed = 0x10a;
             static final int CALL_ImageReceived = 0x20a;
+            static final int CALL_RawImageReceived = 0x30a;
         }
     }
     

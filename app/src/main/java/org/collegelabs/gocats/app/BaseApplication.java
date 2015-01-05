@@ -6,13 +6,17 @@ import android.os.Build;
 import android.util.Log;
 import go.Go;
 import go.libcats.Libcats;
+import org.acra.ACRA;
+import org.acra.annotation.ReportsCrashes;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
-/**
- */
+@ReportsCrashes(
+        formKey = "", // This is required for backward compatibility but not used
+        formUri = "http://localhost/reportpath"
+)
 public class BaseApplication extends Application {
     
     private static String TAG = Application.class.getSimpleName();
@@ -27,6 +31,7 @@ public class BaseApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        ACRA.init(this);
 
         Go.init(getApplicationContext());
 

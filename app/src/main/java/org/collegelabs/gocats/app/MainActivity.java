@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.database.DataSetObserver;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -30,6 +31,8 @@ import java.lang.ref.WeakReference;
 public class MainActivity extends Activity  {
 
     @InjectView(R.id.viewpager) public ViewPager viewPager;
+    @InjectView(R.id.progressSpinner) public ProgressBar progressSpinner;
+
     private CatPagerAdapter catPagerAdapter;
 
     @Override
@@ -41,6 +44,15 @@ public class MainActivity extends Activity  {
         String lastId = savedInstanceState != null ? savedInstanceState.getString("lastId", null) : null;
         catPagerAdapter = new CatPagerAdapter(lastId);
         viewPager.setAdapter(catPagerAdapter);
+        catPagerAdapter.registerDataSetObserver(new DataSetObserver() {
+            @Override
+            public void onChanged() {
+                if(catPagerAdapter.getCount() != 0){
+                    progressSpinner.setVisibility(View.GONE);
+                    catPagerAdapter.unregisterDataSetObserver(this);
+                }
+            }
+        });
     }
 
     @Override

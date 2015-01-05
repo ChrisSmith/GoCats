@@ -4,6 +4,7 @@ import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import org.collegelabs.gocats.app.MainActivity;
 
 /**
  * A {@link PagerAdapter} which behaves like an {@link android.widget.Adapter} with view types and
@@ -105,4 +106,6 @@ public abstract class RecyclingPagerAdapter extends PagerAdapter {
      * @return A View corresponding to the data at the specified position.
      */
     public abstract View getView(int position, View convertView, ViewGroup container);
+
+
 }
