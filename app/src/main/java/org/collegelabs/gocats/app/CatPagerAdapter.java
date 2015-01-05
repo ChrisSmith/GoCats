@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.jakewharton.salvage.RecyclingPagerAdapter;
 import go.libcats.Libcats;
+import timber.log.Timber;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -81,7 +82,7 @@ public class CatPagerAdapter extends RecyclingPagerAdapter {
     public View getView(int position, View convertView, ViewGroup container) {
 
         if(position == getCount() - 1){
-            Log.d(CatPagerAdapter.class.getSimpleName(),  "LoadNextBatch");
+            Timber.d("LoadNextBatch");
             callbackToken.LoadNextBatch();
         }
 

@@ -9,6 +9,7 @@ import (
 )
 
 func main() {
+	libcats.DisableImageDecoding()
 	libcats.SetThreadLogger()
 	fmt.Printf("main tid %d\n", libcats.GetThreadId())
 	app.Run(app.Callbacks{})

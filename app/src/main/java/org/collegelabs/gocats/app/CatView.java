@@ -17,13 +17,12 @@ import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import go.libcats.Libcats;
+import timber.log.Timber;
 
 import java.lang.ref.WeakReference;
 
 
 public class CatView extends RelativeLayout implements View.OnClickListener {
-
-    private static final String TAG = CatView.class.getSimpleName();
 
     @InjectView(R.id.textview) public TextView textView;
     @InjectView(R.id.progressSpinner) public ProgressBar progressSpinner;
@@ -49,8 +48,6 @@ public class CatView extends RelativeLayout implements View.OnClickListener {
     }
 
     private void init(Context context, AttributeSet attrs, int defStyle) {
-        Log.d(TAG, "new view!");
-
         LayoutInflater layoutInflater  = LayoutInflater.from(context);
         View view = layoutInflater.inflate(R.layout.pager_view, this);
         ButterKnife.inject(this, view);
@@ -77,7 +74,7 @@ public class CatView extends RelativeLayout implements View.OnClickListener {
         if(this.metaData == null || !info.id.equals(metaData.id)){
             // wrong image
             if(info.image != null){
-                Log.d(TAG, "recycling lost image");
+                Timber.d("recycling lost image");
                 info.image.recycle();
                 info.image = null;
             }
@@ -144,7 +141,7 @@ public class CatView extends RelativeLayout implements View.OnClickListener {
     private void setCallback(final Libcats.ImageCallbackToken newCallback, String id){
         if(!id.equals(metaData.id)){
             // whelp, just cancel it
-            Log.d(TAG, "Cancelling old callback");
+            Timber.d("Cancelling old callback");
             BaseApplication.submit(new Runnable() {
                 @Override
                 public void run() {
@@ -157,7 +154,7 @@ public class CatView extends RelativeLayout implements View.OnClickListener {
     }
 
     public void RemoveCallback(){
-        Log.d(TAG, "removing callback");
+        Timber.d("removing callback");
         final Libcats.ImageCallbackToken oldCallback = callback;
         if(oldCallback == null){
             return;
@@ -172,7 +169,7 @@ public class CatView extends RelativeLayout implements View.OnClickListener {
     }
 
     private void setCallback(){
-        Log.d(TAG, "creating callback for: "+metaData.url);
+        Timber.d("creating callback for: "+metaData.url);
         long start = System.currentTimeMillis();
 
         Libcats.ImageCallbackToken oldCallback = callback;
@@ -180,7 +177,7 @@ public class CatView extends RelativeLayout implements View.OnClickListener {
 
         BaseApplication.submit(new CallbackRunner(this, oldCallback, getWidth(), getHeight(), metaData));
 
-        Log.d(TAG, "submitted to thread: "+(System.currentTimeMillis() - start)+" ms");
+        Timber.d("submitted to thread: "+(System.currentTimeMillis() - start)+" ms");
     }
 
     private static class CallbackRunner implements Runnable {
@@ -204,7 +201,7 @@ public class CatView extends RelativeLayout implements View.OnClickListener {
             if(this.callback != null){
                 long start = System.currentTimeMillis();
                 this.callback.Close();
-                Log.d(TAG, "callback.Close(): "+(System.currentTimeMillis() - start)+" ms");
+                Timber.d("callback.Close(): "+(System.currentTimeMillis() - start)+" ms");
             }
 
             final CatView view = viewRef.get();
@@ -214,7 +211,7 @@ public class CatView extends RelativeLayout implements View.OnClickListener {
 
             long start = System.currentTimeMillis();
             final Libcats.ImageCallbackToken newCallback = Libcats.CreateImageCallback(new ImgCallback(view, width, height), width, height, metaData.id, metaData.url);
-            Log.d(TAG, "CreateImageCallback: "+(System.currentTimeMillis() - start)+" ms");
+            Timber.d("CreateImageCallback: "+(System.currentTimeMillis() - start)+" ms");
 
             view.post(new Runnable() {
                 @Override
@@ -278,12 +275,12 @@ public class CatView extends RelativeLayout implements View.OnClickListener {
                 image = null;
 
                 if(bmp != null){
-                    Log.d(TAG, "decodeSampledBitmap ("+bmp.getWidth()+"x"+bmp.getHeight()+" "+getSize(bmp)+" ): "+(System.currentTimeMillis() - start)+" ms");
+                    Timber.d("decodeSampledBitmap ("+bmp.getWidth()+"x"+bmp.getHeight()+" "+getSize(bmp)+" ): "+(System.currentTimeMillis() - start)+" ms");
 
                     start = System.currentTimeMillis();
                     bmp = centerCropBitmap(bmp, width, height);
 
-                    Log.d(TAG, "centerCropBitmap ("+bmp.getWidth()+"x"+bmp.getHeight()+" "+getSize(bmp)+" ): to fit " + width + "x" + height + " "+(System.currentTimeMillis() - start)+" ms");
+                    Timber.d("centerCropBitmap ("+bmp.getWidth()+"x"+bmp.getHeight()+" "+getSize(bmp)+" ): to fit " + width + "x" + height + " "+(System.currentTimeMillis() - start)+" ms");
                 }
             }
             final ImageInfo info = new ImageInfo(id, bmp);
@@ -352,8 +349,6 @@ public class CatView extends RelativeLayout implements View.OnClickListener {
 
         // Calculate inSampleSize
         options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
-
-        Log.d(TAG, "sampleSize: " + options.inSampleSize);
 
         // Decode bitmap with inSampleSize set
         options.inJustDecodeBounds = false;

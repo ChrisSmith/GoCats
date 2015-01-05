@@ -58,16 +58,13 @@ public class MainActivity extends Activity  {
     @Override
     protected void onStart() {
         super.onStart();
-        Log.d(this.getClass().getSimpleName(), "onStart");
         catPagerAdapter.StartLoading();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        Log.d(this.getClass().getSimpleName(), "onStop");
         catPagerAdapter.StopLoading();
-
     }
 
     @Override

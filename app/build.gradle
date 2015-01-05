@@ -23,10 +23,21 @@ android {
         versionCode 1
         versionName "1.0"
     }
+
+    signingConfigs {
+        release {
+            storeFile file("/Users/chris/android/keystore/collegeLabsKeystore")
+            storePassword file("/Users/chris/android/keystore/word.txt").readLines().get(0)
+            keyAlias "collegelabs"
+            keyPassword file("/Users/chris/android/keystore/word.txt").readLines().get(0)
+        }
+    }
+
     buildTypes {
         release {
             runProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 }
@@ -34,5 +45,6 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:support-v4:21.0.3'
+    compile 'com.jakewharton.timber:timber:2.5.0'
     compile 'com.jakewharton:butterknife:6.0.0'
 }

@@ -84,6 +84,18 @@ public abstract class Libcats {
         return _result;
     }
     
+    public static void DisableDebugLogging() {
+        go.Seq _in = new go.Seq();
+        go.Seq _out = new go.Seq();
+        Seq.send(DESCRIPTOR, CALL_DisableDebugLogging, _in, _out);
+    }
+    
+    public static void DisableImageDecoding() {
+        go.Seq _in = new go.Seq();
+        go.Seq _out = new go.Seq();
+        Seq.send(DESCRIPTOR, CALL_DisableImageDecoding, _in, _out);
+    }
+    
     public interface ImageCallback extends go.Seq.Object {
         public void ImageFailed(String id);
         
@@ -538,6 +550,8 @@ public abstract class Libcats {
     
     private static final int CALL_CreateImageCallback = 1;
     private static final int CALL_CreateMetaDataCallback = 2;
-    private static final int CALL_Init = 3;
+    private static final int CALL_DisableDebugLogging = 3;
+    private static final int CALL_DisableImageDecoding = 4;
+    private static final int CALL_Init = 5;
     private static final String DESCRIPTOR = "libcats";
 }
