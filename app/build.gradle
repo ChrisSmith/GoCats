@@ -22,6 +22,8 @@ android {
         targetSdkVersion 21
         versionCode 1
         versionName "1.0"
+
+
     }
 
     signingConfigs {
@@ -38,6 +40,16 @@ android {
             runProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
+
+            buildConfigField "String", "ACRA_USER", file(".config/acra/user.txt").readLines().get(0)
+            buildConfigField "String", "ACRA_PASS", file(".config/acra/pass.txt").readLines().get(0)
+            buildConfigField "String", "ACRA_ENDPOINT", file(".config/acra/endpoint.txt").readLines().get(0)
+        }
+
+        debug {
+            buildConfigField "String", "ACRA_USER", "\"\""
+            buildConfigField "String", "ACRA_PASS", "\"\""
+            buildConfigField "String", "ACRA_ENDPOINT", "\"\""
         }
     }
 }

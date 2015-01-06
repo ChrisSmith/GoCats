@@ -3,7 +3,6 @@ package org.collegelabs.gocats.app;
 import android.annotation.TargetApi;
 import android.app.Application;
 import android.os.Build;
-import android.util.Log;
 import go.Go;
 import go.libcats.Libcats;
 import org.acra.ACRA;
@@ -12,11 +11,15 @@ import timber.log.Timber;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 
 @ReportsCrashes(
-        formKey = "", // This is required for backward compatibility but not used
-        formUri = "http://localhost/reportpath"
+        formKey = "",
+        formUri = BuildConfig.ACRA_ENDPOINT,
+        reportType = org.acra.sender.HttpSender.Type.JSON,
+        httpMethod = org.acra.sender.HttpSender.Method.PUT,
+        formUriBasicAuthLogin=BuildConfig.ACRA_USER,
+        formUriBasicAuthPassword=BuildConfig.ACRA_PASS
+
 )
 public class BaseApplication extends Application {
 
